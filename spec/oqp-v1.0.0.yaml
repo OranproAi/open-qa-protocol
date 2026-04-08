@@ -1,0 +1,213 @@
+openapi: 3.1.0
+info:
+  title: Open QA Protocol (OQP)
+  version: 1.0.0
+  description: >
+    The Open QA Protocol (OQP) is an open standard designed to facilitate agentic software verification. 
+    It provides a common language for coding agents, CI/CD pipelines, and human developers to query 
+    semantic business rules, assess release risk, and execute autonomous testing workflows against a 
+    centralized Knowledge Graph.
+  contact:
+    name: OrangePro Engineering
+    url: https://orangepro.ai
+servers:
+  - url: https://api.orangepro.ai/v1/oqp
+    description: OrangePro Cloud Implementation
+  - url: http://localhost:8182/v1/oqp
+    description: Local VPC Orchestrator
+tags:
+  - name: Discovery
+    description: Endpoints for agents to discover available QA capabilities and supported extensions.
+  - name: Context
+    description: Endpoints to query the Knowledge Graph for semantic business rules and historical edge cases.
+  - name: Verification
+    description: Endpoints to trigger autonomous testing and assess release readiness.
+
+paths:
+  /.well-known/oqp:
+    get:
+      tags:
+        - Discovery
+      summary: Discover supported OQP capabilities
+      description: >
+        Returns the OQP manifest for the current server. Agents use this to negotiate capabilities 
+        (e.g., whether the server supports Wind Tunnel simulation or specific language runners).
+      responses:
+        '200':
+          description: OQP Capability Manifest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CapabilityManifest'
+
+  /context/workflows/{workflow_id}:
+    get:
+      tags:
+        - Context
+      summary: Retrieve semantic rules for a specific business workflow
+      description: >
+        Queries the Knowledge Graph for the business rules, known edge cases, and historical incidents 
+        associated with a specific workflow (e.g., "Guest Checkout"). Used by coding agents (via MCP) 
+        to gain context before writing code.
+      parameters:
+        - name: workflow_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The canonical ID of the workflow (e.g., `checkout_flow_v2` or Jira Epic ID).
+      responses:
+        '200':
+          description: Workflow semantic context
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowContext'
+        '404':
+          description: Workflow not found in Knowledge Graph
+
+  /verification/assess-risk:
+    post:
+      tags:
+        - Verification
+      summary: Assess the risk of a proposed code change
+      description: >
+        Submits a pull request diff or code snippet. The server maps the syntactic changes to the 
+        semantic Knowledge Graph and returns a risk score, identifying which business workflows 
+        are impacted and what coverage gaps exist.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RiskAssessmentRequest'
+      responses:
+        '200':
+          description: Risk assessment report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RiskAssessmentResponse'
+
+  /verification/execute:
+    post:
+      tags:
+        - Verification
+      summary: Execute an autonomous verification workflow
+      description: >
+        Triggers a sandboxed testing agent to verify a specific workflow or PR. The agent will 
+        autonomously generate tests, execute them, and attempt recovery before returning a final verdict.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExecutionRequest'
+      responses:
+        '202':
+          description: Execution accepted, returning a job ID for polling
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                  status_url:
+                    type: string
+                    format: uri
+
+components:
+  schemas:
+    CapabilityManifest:
+      type: object
+      required:
+        - protocol_version
+        - capabilities
+      properties:
+        protocol_version:
+          type: string
+          example: "1.0.0"
+        capabilities:
+          type: array
+          items:
+            type: string
+          example: ["context.read", "verification.execute", "simulation.wind_tunnel"]
+        extensions:
+          type: object
+          description: Custom extensions supported by this server implementation.
+          additionalProperties:
+            type: boolean
+          example:
+            com.orangepro.qefix_taxonomy: true
+
+    WorkflowContext:
+      type: object
+      properties:
+        workflow_id:
+          type: string
+        description:
+          type: string
+        business_rules:
+          type: array
+          items:
+            type: string
+          example: ["Guest users must verify email before payment.", "Orders over $500 require manual review."]
+        historical_incidents:
+          type: array
+          items:
+            type: object
+            properties:
+              incident_id:
+                type: string
+              root_cause:
+                type: string
+        test_coverage_percentage:
+          type: number
+          format: float
+
+    RiskAssessmentRequest:
+      type: object
+      required:
+        - target_branch
+        - diff_payload
+      properties:
+        target_branch:
+          type: string
+        diff_payload:
+          type: string
+          description: The unified diff or abstract syntax tree representation of the change.
+        associated_tickets:
+          type: array
+          items:
+            type: string
+
+    RiskAssessmentResponse:
+      type: object
+      properties:
+        risk_score:
+          type: string
+          enum: [LOW, MEDIUM, HIGH, CRITICAL]
+        impacted_workflows:
+          type: array
+          items:
+            type: string
+        missing_coverage:
+          type: array
+          items:
+            type: string
+            description: Specific semantic edge cases that are not covered by existing tests for this diff.
+
+    ExecutionRequest:
+      type: object
+      required:
+        - target
+        - green_contract_level
+      properties:
+        target:
+          type: string
+          description: What to verify (e.g., a PR URL or a workflow ID).
+        green_contract_level:
+          type: string
+          enum: [TARGETED_TESTS, PACKAGE, WORKSPACE, MERGE_READY]
+          description: The required level of verification success before the agent returns a SHIP verdict.
