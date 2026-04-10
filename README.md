@@ -52,3 +52,11 @@ We welcome contributions from the community! Please see our [Contributing Guide]
 ## License
 
 The Open QA Protocol specification is licensed under the [Apache License 2.0](LICENSE).
+
+## Contributors
+
+OQP is shaped by practitioners and researchers across the software quality, AI, and developer tooling communities. We are grateful to the following contributors for their review and endorsement of the specification:
+
+| Name | Organization | Role |
+|------|-------------|------|
+| [Philip Lew](https://www.linkedin.com/in/philiplew ) | XBOSoft | Specification Reviewer & Endorser |
