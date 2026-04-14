@@ -60,3 +60,4 @@ OQP is shaped by practitioners and researchers across the software quality, AI, 
 | Name | Organization | Role |
 |------|-------------|------|
 | [Philip Lew](https://www.linkedin.com/in/philiplew ) | XBOSoft | Specification Reviewer & Endorser |
+| [Benjamin Young](https://www.linkedin.com/in/bigbluehat ) | W3C JSON-LD Working Group | JSON-LD Knowledge Graph Context Lead |
