@@ -1,0 +1,65 @@
+{
+  "CapabilityManifest": {
+    "@context": "https://raw.githubusercontent.com/OranproAi/open-qa-protocol/main/context.json",
+    "@type": "CapabilityManifest",
+    "protocol_version": "1.0.0",
+    "capabilities": [
+      "context-retrieval",
+      "risk-assessment",
+      "verification-execution"
+    ],
+    "extensions": {
+      "supports_playwright": true,
+      "supports_jira_sync": true
+    }
+  },
+  
+  "WorkflowContext": {
+    "@context": "https://raw.githubusercontent.com/OranproAi/open-qa-protocol/main/context.json",
+    "@type": "WorkflowContext",
+    "workflow_id": "wf-auth-001",
+    "description": "User login and authentication flow",
+    "business_rules": [
+      "Passwords must be at least 12 characters",
+      "Failed login attempts lock account after 5 tries"
+    ],
+    "historical_incidents": [
+      {
+        "incident_id": "INC-2025-089",
+        "root_cause": "Session token not invalidated on logout"
+      }
+    ],
+    "test_coverage_percentage": 94.5
+  },
+
+  "RiskAssessmentRequest": {
+    "@context": "https://raw.githubusercontent.com/OranproAi/open-qa-protocol/main/context.json",
+    "@type": "RiskAssessmentRequest",
+    "target_branch": "feature/oauth-integration",
+    "diff_payload": "diff --git a/auth.js b/auth.js...",
+    "associated_tickets": [
+      "JIRA-4921",
+      "JIRA-4922"
+    ]
+  },
+
+  "RiskAssessmentResponse": {
+    "@context": "https://raw.githubusercontent.com/OranproAi/open-qa-protocol/main/context.json",
+    "@type": "RiskAssessmentResponse",
+    "risk_score": "HIGH",
+    "impacted_workflows": [
+      "wf-auth-001",
+      "wf-checkout-042"
+    ],
+    "missing_coverage": [
+      "OAuth token refresh expiration edge case"
+    ]
+  },
+
+  "ExecutionRequest": {
+    "@context": "https://raw.githubusercontent.com/OranproAi/open-qa-protocol/main/context.json",
+    "@type": "ExecutionRequest",
+    "target": "https://staging.example.com",
+    "green_contract_level": "strict"
+  }
+}
