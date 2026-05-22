@@ -1,0 +1,95 @@
+vocabulary: https://example.com/ontology/
+prefixes:
+  schema: https://schema.org/
+  xsd: http://www.w3.org/2001/XMLSchema#
+
+classes:
+  CapabilityManifest:
+    iri: https://example.com/ontology/CapabilityManifest
+    label: Capability Manifest
+    properties:
+      protocol_version:
+        iri: https://schema.org/version
+        range: xsd:string
+      capabilities:
+        iri: https://schema.org/featureList
+        range: xsd:string
+        container: set
+      extensions:
+        iri: https://schema.org/additionalProperty
+        range: xsd:boolean
+
+  WorkflowContext:
+    iri: https://example.com/ontology/WorkflowContext
+    label: Workflow Context
+    properties:
+      workflow_id:
+        iri: https://schema.org/identifier
+        range: xsd:string
+      description:
+        iri: https://schema.org/description
+        range: xsd:string
+      business_rules:
+        iri: https://schema.org/conditionsOfAccess
+        range: xsd:string
+        container: set
+      historical_incidents:
+        iri: https://example.com/ontology/historicalIncidents
+        range: WorkflowIncident
+        container: set
+      test_coverage_percentage:
+        iri: https://schema.org/measurementTechnique
+        range: xsd:float
+
+  WorkflowIncident:
+    iri: https://example.com/ontology/WorkflowIncident
+    label: Workflow Incident
+    properties:
+      incident_id:
+        iri: https://schema.org/identifier
+        range: xsd:string
+      root_cause:
+        iri: https://schema.org/cause
+        range: xsd:string
+
+  RiskAssessmentRequest:
+    iri: https://example.com/ontology/RiskAssessmentRequest
+    label: Risk Assessment Request
+    properties:
+      target_branch:
+        iri: https://schema.org/branch
+        range: xsd:string
+      diff_payload:
+        iri: https://schema.org/codeSampleType
+        range: xsd:string
+      associated_tickets:
+        iri: https://schema.org/identifier
+        range: xsd:string
+        container: set
+
+  RiskAssessmentResponse:
+    iri: https://example.com/ontology/RiskAssessmentResponse
+    label: Risk Assessment Response
+    properties:
+      risk_score:
+        iri: https://schema.org/ratingValue
+        range: xsd:string
+      impacted_workflows:
+        iri: https://schema.org/affectedBy
+        range: xsd:string
+        container: set
+      missing_coverage:
+        iri: https://example.com/ontology/missingCoverage
+        range: xsd:string
+        container: set
+
+  ExecutionRequest:
+    iri: https://example.com/ontology/ExecutionRequest
+    label: Execution Request
+    properties:
+      target:
+        iri: https://schema.org/about
+        range: xsd:string
+      green_contract_level:
+        iri: https://schema.org/category
+        range: xsd:string

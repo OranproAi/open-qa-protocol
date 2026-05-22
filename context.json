@@ -1,0 +1,129 @@
+{
+  "@context": {
+    "http://www.w3.org/2001/XMLSchema#": "http://www.w3.org/2001/XMLSchema#",
+
+    "description": {
+      "@id": "https://schema.org/description",
+      "@type": "http://www.w3.org/2001/XMLSchema#string"
+    },
+
+    "identifier": {
+      "@id": "https://schema.org/identifier",
+      "@type": "http://www.w3.org/2001/XMLSchema#string"
+    },
+
+    "category": {
+      "@id": "https://schema.org/category",
+      "@type": "http://www.w3.org/2001/XMLSchema#string"
+    },
+
+    "CapabilityManifest": {
+      "@id": "https://example.com/ontology/CapabilityManifest",
+      "@context": {
+        "@protected": true,
+        "protocol_version": {
+          "@id": "https://schema.org/version",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        },
+        "capabilities": {
+          "@id": "https://schema.org/featureList",
+          "@container": "@set",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        },
+        "extensions": {
+          "@id": "https://schema.org/additionalProperty",
+          "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+        }
+      }
+    },
+
+    "WorkflowContext": {
+      "@id": "https://example.com/ontology/WorkflowContext",
+      "@context": {
+        "@protected": true,
+        "workflow_id": {
+          "@id": "https://schema.org/identifier",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        },
+        "business_rules": {
+          "@id": "https://schema.org/conditionsOfAccess",
+          "@container": "@set",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        },
+        "historical_incidents": {
+          "@id": "https://example.com/ontology/historicalIncidents",
+          "@container": "@set",
+          "@type": "@id"
+        },
+        "incident_id": {
+          "@id": "https://schema.org/identifier",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        },
+        "root_cause": {
+          "@id": "https://schema.org/cause",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        },
+        "test_coverage_percentage": {
+          "@id": "https://schema.org/measurementTechnique",
+          "@type": "http://www.w3.org/2001/XMLSchema#float"
+        }
+      }
+    },
+
+    "RiskAssessmentRequest": {
+      "@id": "https://example.com/ontology/RiskAssessmentRequest",
+      "@context": {
+        "@protected": true,
+        "target_branch": {
+          "@id": "https://schema.org/branch",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        },
+        "diff_payload": {
+          "@id": "https://schema.org/codeSampleType",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        },
+        "associated_tickets": {
+          "@id": "https://schema.org/identifier",
+          "@container": "@set",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        }
+      }
+    },
+
+    "RiskAssessmentResponse": {
+      "@id": "https://example.com/ontology/RiskAssessmentResponse",
+      "@context": {
+        "@protected": true,
+        "risk_score": {
+          "@id": "https://schema.org/ratingValue",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        },
+        "impacted_workflows": {
+          "@id": "https://schema.org/affectedBy",
+          "@container": "@set",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        },
+        "missing_coverage": {
+          "@id": "https://example.com/ontology/missingCoverage",
+          "@container": "@set",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        }
+      }
+    },
+
+    "ExecutionRequest": {
+      "@id": "https://example.com/ontology/ExecutionRequest",
+      "@context": {
+        "@protected": true,
+        "target": {
+          "@id": "https://schema.org/about",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        },
+        "green_contract_level": {
+          "@id": "https://schema.org/category",
+          "@type": "http://www.w3.org/2001/XMLSchema#string"
+        }
+      }
+    }
+  }
+}
